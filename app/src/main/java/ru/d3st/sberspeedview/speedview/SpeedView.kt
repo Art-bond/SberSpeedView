@@ -7,6 +7,9 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import ru.d3st.sberspeedview.R
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.sin
 
 class SpeedView @JvmOverloads constructor(
     context: Context?,
@@ -24,7 +27,6 @@ class SpeedView @JvmOverloads constructor(
 
     private val textArray =
         arrayOf("0", "20", "40", "60", "80", "100", "120", "140", "160", "180", "200", "220")
-    private var refreshThread: Thread? = null
 
     private var progress: Int = 0
 
@@ -112,11 +114,11 @@ class SpeedView @JvmOverloads constructor(
         val textR = (measuredWidth / 2 - 50).toFloat() // radius of circle formed by text
         for (i in 0..11) {
             val startX =
-                (measuredWidth / 2 + textR * Math.sin(Math.PI / 6 * i) - textPaint.measureText(
+                (measuredWidth / 2 + textR * sin(Math.PI / 6 * i) - textPaint.measureText(
                     textArray[i]
                 ) / 2).toFloat()
             val startY =
-                (measuredHeight / 2 - textR * Math.cos(Math.PI / 6 * i) + textPaint.measureText(
+                (measuredHeight / 2 - textR * cos(Math.PI / 6 * i) + textPaint.measureText(
                     textArray[i]
                 ) / 2).toFloat()
             canvas?.drawText(textArray[i], startX, startY, textPaint)
@@ -159,10 +161,10 @@ class SpeedView @JvmOverloads constructor(
         //The radius is a little smaller than the second hand
         val longR = measuredWidth / 2 - 120
         val shortR = 40
-        val startX = (measuredWidth / 2 - shortR * Math.sin(progress.times(Math.PI / 50))).toFloat()
-        val startY = (measuredWidth / 2 + shortR * Math.cos(progress.times(Math.PI / 50))).toFloat()
-        val endX = (measuredWidth / 2 + longR * Math.sin(progress.times(Math.PI / 50))).toFloat()
-        val endY = (measuredWidth / 2 - longR * Math.cos(progress.times(Math.PI / 50))).toFloat()
+        val startX = (measuredWidth / 2 - shortR * sin(progress.times(Math.PI / 50))).toFloat()
+        val startY = (measuredWidth / 2 + shortR * cos(progress.times(Math.PI / 50))).toFloat()
+        val endX = (measuredWidth / 2 + longR * sin(progress.times(Math.PI / 50))).toFloat()
+        val endY = (measuredWidth / 2 - longR * cos(progress.times(Math.PI / 50))).toFloat()
         canvas?.drawLine(startX, startY, endX, endY, paint!!)
     }
 
@@ -181,7 +183,7 @@ class SpeedView @JvmOverloads constructor(
             if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
                 DEFAULT_WIDTH
             } else {
-                Math.min(widthSpecSize, heightSpecSize)
+                min(widthSpecSize, heightSpecSize)
             }
         setMeasuredDimension(result, result)
     }
